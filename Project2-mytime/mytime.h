@@ -1,6 +1,7 @@
 #pragma once
 #ifndef MYTIME_H_
 #define MYTIME_H_
+#include<iostream>
 
 class Time
 {
@@ -15,6 +16,9 @@ public:
 	Time operator+(const Time& t) const;
 	Time operator-(const Time& t) const;
 	Time operator*(double n) const;
-	void Show() const;
+	friend Time operator*(double m, const Time& t)
+	{	return t * m;	}				//函数较小，直接内联
+
+	friend std::ostream& operator<<(std::ostream & os, const Time & t);;
 };
 #endif

@@ -251,7 +251,8 @@ this是对象1的地址，*this才是对象1本身。
 				double costs[常量名];
 */
 
-/*		重载
+/*		使用类
+一、重载
 operator_()
 例子：
 	原型：	
@@ -270,4 +271,13 @@ operator_()
 		total = weeding + waxing;
 		total.Show();
 		cout << endl;
+二、友元
+背景：·问题一：一般重载将 A = B * 2.75; 转换成A = B.operator*(2.75);
+			    但是若 A = 2.75 * B； 则转换失败。
+	  ·方案：而用非成员函数 Time operator*(double m, const Time & t);
+			  则转换成 A = operator*(2.75, B);
+	  ·问题二：但非成员函数无法访问类（Time)的私有数据。
+	  ·方案：友元。将原型放置在类声明中
+关键字：friend
+声明：friend Time operator*(double m, const Time & t);
 */

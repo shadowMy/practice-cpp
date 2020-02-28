@@ -1,4 +1,4 @@
-#include<iostream>
+//#include<iostream>	可以删除
 #include "mytime.h"
 
 Time::Time()
@@ -59,7 +59,8 @@ Time Time::operator*(double n) const
 	return result;
 }
 
-void Time::Show() const
+std::ostream& operator<<(std::ostream& os, const Time& t)
 {
-	std::cout << hours << " hours, " << minutes << " minutes";
+	os << t.hours << " hours, " << t.minutes << " minutes";
+	return os;						//返回类型ostream
 }	
