@@ -9,7 +9,7 @@ int main()
 	using std::cout;
 	using std::endl;
 
-	Brass* p_clients[CLIENTS];
+	AcctABC* p_clients[CLIENTS];
 	std::string temp;
 	long tempnum;
 	double tempbal;

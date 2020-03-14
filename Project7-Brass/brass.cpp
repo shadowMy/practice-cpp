@@ -3,22 +3,18 @@
 using std::cout;
 using std::endl;
 using std::string;
-//格式化的东西/内容	formatting stuff
-typedef std::ios_base::fmtflags format;
-typedef std::streamsize precis;
-format setFormat();
-void restore(format f, precis p);
+using std::ios_base;
 
-//Brass methods
+//Abstract Base Class
 
-Brass::Brass(const string& s, long an, double bal)
+AcctABC::AcctABC(const string& s, long an, double bal)
 {
 	fullName = s;
 	acctNum = an;
 	balance = bal;
 }
 
-void Brass::Deposit(double amt)
+void AcctABC::Deposit(double amt)
 {
 	if (amt < 0)
 		cout << "Negative deposit not allowed; "
@@ -27,81 +23,90 @@ void Brass::Deposit(double amt)
 		balance += amt;
 }
 
-void Brass::Withdraw(double amt)
+void AcctABC::Withdraw(double amt)
+{
+	balance -= amt;
+}
+
+//protected methods for formatting
+AcctABC::Formatting AcctABC::SetFormat() const
 {
 	//set up ###.## format
-	format initialState = setFormat();
-	precis prec = cout.precision(2);
+	Formatting f;
+	f.flag =
+		cout.setf(ios_base::fixed, ios_base::floatfield);
+	f.pr = cout.precision(2);
+	return f;
+}
 
+void AcctABC::Restore(Formatting& f) const
+{
+	cout.setf(f.flag, ios_base::floatfield);
+	cout.precision(f.pr);
+}
+
+//Brass methods
+
+void Brass::Withdraw(double amt)
+{
 	if (amt < 0)
 		cout << "Withdrawal amount must be positive; "
 		<< "withdrawal canceled.\n";
-	else if (amt <= balance)
-		balance -= amt;
+	else if (amt <= Balance())
+		AcctABC::Withdraw(amt);
 	else
 		cout << "Withdrawal amount of $" << amt
 		<< "exceeds you balance.\n"				//取款金额超过你的余额
 		<< "Withdrawal canceled.\n";
-	restore(initialState, prec);				//restore original format 还原原始格式
-}
-
-double Brass::Balance() const
-{
-	return balance;
 }
 
 void Brass::ViewAcct() const
 {
 	//set up ###.## format
-	format initialState = setFormat();
-	precis prec = cout.precision(2);
-	cout << "Client: " << fullName << endl;
-	cout << "Account Number: " << acctNum << endl;
-	cout << "Balance: $" << balance << endl;
-	restore(initialState, prec);
+	Formatting f = SetFormat();
+	cout << "Brass Client: " << FullName() << endl;
+	cout << "Account Number: " << AcctNum() << endl;
+	cout << "Balance: $" << Balance() << endl;
+	Restore(f);
 }
 
 //BrassPlus methods
 
-BrassPlus::BrassPlus(const string& s, long an, double bal, double ml, double r) : Brass(s, an, bal)
+BrassPlus::BrassPlus(const string& s, long an, double bal, double ml, double r) : AcctABC(s, an, bal)
 {
 	maxLoan = ml;
 	owesBank = 0.0;
 	rate = r;
 }
 
-BrassPlus::BrassPlus(const Brass& ba, double ml, double r) : Brass(ba)
+BrassPlus::BrassPlus(const Brass& ba, double ml, double r) : AcctABC(ba)
 {
 	maxLoan = ml;
 	owesBank = 0.0;
 	rate = r;
 }
 
-//redefine how ViewAcct() work
 void BrassPlus::ViewAcct() const
 {
-	//set up ###.## format
-	format initialState = setFormat();
-	precis prec = cout.precision(2);
+	Formatting f = SetFormat();
 
-	Brass::ViewAcct();
+	cout << "BrassPlus Client: " << FullName() << endl;
+	cout << "Account Number: " << AcctNum() << endl;
+	cout << "Balance: $" << Balance() << endl;
 	cout << "Maximum loan: $" << maxLoan << endl;
 	cout << "Owed to bank: $" << owesBank << endl;
 	cout.precision(3);
 	cout << "Loan Rate: " << 100 * rate << "%\n";
-	restore(initialState, prec);
+	Restore(f);
 }
 
-//redefine how Withdraw() work
 void BrassPlus::Withdraw(double amt)
 {
-	//set up ###.## format
-	format initialState = setFormat();
-	precis prec = cout.precision(2);
+	Formatting f = SetFormat();
 
 	double bal = Balance();
 	if (amt <= bal)
-		Brass::Withdraw(amt);
+		AcctABC::Withdraw(amt);
 	else if (amt <= bal + maxLoan - owesBank)
 	{
 		double advance = amt - bal;
@@ -109,20 +114,10 @@ void BrassPlus::Withdraw(double amt)
 		cout << "Bank advance: $" << advance << endl;				//银行借贷
 		cout << "Finance charge: $" << advance * rate << endl;		//借贷费
 		Deposit(advance);
-		Brass::Withdraw(amt);
+		AcctABC::Withdraw(amt);
 	}
 	else
 		cout << "Credit limit exceeded. Transaction cancelled.\n";
-	restore(initialState, prec);
+	Restore(f);
 }
 
-format setFormat()
-{
-	return cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
-}
-
-void restore(format f, precis p)
-{
-	cout.setf(f, std::ios_base::floatfield);
-	cout.precision(p);
-}
