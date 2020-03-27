@@ -16,7 +16,7 @@ const string& Student::Name() const
 {
 	return (const string&) *this;
 }
-
+/*
 double& Student::operator[](int i)
 {
 	return ArrayDb::operator[](i) ;			//use valarray<double>::operator[]()
@@ -26,7 +26,7 @@ double Student::operator[](int i) const			//要调用 const 的重载，只需要上下文是 
 {
 	return ArrayDb::operator[](i);
 }
-
+*/
 //private methods
 ostream& Student::arr_out(ostream& os) const
 {
