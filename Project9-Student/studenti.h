@@ -4,28 +4,26 @@
 
 #include<iostream>
 #include<string>
-#include<valarray>
-class Student
+#include<valarray>			//valarray类
+class Student : private std::string, private std::valarray<double>
 {
 private:
 	typedef std::valarray<double> ArrayDb;
-	std::string name;
-	ArrayDb scores;
 	std::ostream& arr_out(std::ostream& os) const;
 public:
-	Student() : name("Null Student"), scores() { }
+	Student() : std::string("Null Student"), ArrayDb() { }
 	explicit Student(const std::string& s)		//防止string到Student的隐式类型转换
-		: name(s), scores() 					//explicit关键字只能用于修饰只有一个参数的类构造函数, 它的作用是表明该构造函数是显示的, 而非隐式的, 
+		: std::string(s), ArrayDb() 					//explicit关键字只能用于修饰只有一个参数的类构造函数, 它的作用是表明该构造函数是显示的, 而非隐式的, 
 	{ }											//跟它相对应的另一个关键字是implicit, 意思是隐藏的, 类构造函数默认情况下即声明为implicit(隐式).	 
 	explicit Student(int n)						//防止int到Student的隐式类型转换
-		: name("Nully"), scores(n) 
+		: std::string("Nully"), ArrayDb(n)
 	{ }											
 	Student(const std::string& s, int n)
-		: name(s), scores(n) { }
+		: std::string(s), ArrayDb(n) { }
 	Student(const std::string&s, const ArrayDb& a)
-		: name(s), scores(a) { }
+		: std::string(s), ArrayDb(a) { }
 	Student(const char* str, const double* pd, int n)
-		: name(str), scores(pd, n) { }
+		: std::string(str), ArrayDb(pd, n) { }
 	~Student() { }
 	double Average() const;
 	const std::string& Name() const;
