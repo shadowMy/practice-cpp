@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Worker0.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClCompile Include="workerMI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="workMI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="worker0.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="worktest.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClInclude Include="WorkerMI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
