@@ -138,7 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="stacktp.h" />
+    <ClInclude Include="stacktp1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stacktem.cpp" />

@@ -1,51 +1,45 @@
 #include<iostream>
-#include<string>
-#include<cctype>
-#include "stacktp.h"
+#include<cstdlib>	//for rand(), srand()
+#include<ctime>		//for time()
+#include "stacktp1.h"
 using std::cin;
 using std::cout;
-using std::string;
 
+const int Num = 10;
 int main()
 {
-	Stack<string> st;	//创建一个空栈，实例化。
-	char ch;
-	string po;
-	cout << "Please enter A to add a purchase order(一个购买订单）,\n"
-		<< "P to process a PO(处理采购订单）, or  Q to quit.\n";
-	while (cin >> ch && std::toupper(ch) != 'Q')
+	std::srand(std::time(0));		//randomize rand()
+	cout << "Please enter stack size: ";
+	int stacksize;
+	cin >> stacksize;
+	Stack<const char*> st(stacksize);		//创建一个stacksize大小的空栈
+	
+	const char* in[Num] = {
+		"1: Hank Gilgamesh", "2:Kiki Ishtar",
+		"3: Betty Rocker", "4:Ian Flagranti",
+		"5: Wolf Kibble", "6:A li baba",
+		"7: teng xun", "8:bai du",
+		"9: sou hu", "10:sou gou",
+	};
+
+	const char* out[Num];
+
+	int processed = 0;
+	int nextin = 0;
+	while (processed < Num)
 	{
-		while (cin.get() != '\n')
-			continue;
-		if (!std::isalpha(ch))		//isalpha:ch不是字母返回0  //如果ch不是字母，则执行...
-		{
-			cout << '\a';
-			continue;
-		}
-		switch (ch)
-		{
-		case 'A':
-		case 'a': 
-			cout << "Enter a PO number to add: ";
-			cin >> po;
-			if (st.isfull())
-				cout << "stack already full\n";
-			else
-				st.push(po);
-			break;
-		case 'P':
-		case 'p':
-			if (st.isempty())
-				cout << "stack already empty\n";
-			else {
-				st.pop(po);
-				cout << "PO #" << po << " popped\n";
-				break;
-			}
-		}
-		cout << "Please enter A to add a purchase order(一个购买订单）,\n"
-			<< "P to process a PO(处理采购订单）, or  Q to quit.\n";
+		if (st.isempty())
+			st.push(in[nextin++]);
+		else if (st.isfull())
+			st.pop(out[processed++]);
+		else if (std::rand() % 2 && nextin < Num)
+			st.push(in[nextin++]);
+		else
+			st.pop(out[processed++]);
 	}
-	cout << "Bye\n";
+	for (int i = 0; i < Num; i++)
+		cout << out[i] << std::endl;
+
+	cout << "Bye!\n";
 	return 0;
 }
